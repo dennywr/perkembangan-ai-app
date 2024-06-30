@@ -77,7 +77,7 @@ if st.button("Prediksi"):
         filtered_text = remove_stopwords(normalized_tokens)
         stemmed_text = stem(filtered_text)
 
-        # st.write(f"Teks hasil preprocessing: {stemmed_text}")
+        st.write(f"Teks hasil preprocessing: {stemmed_text}")
 
         new_data_transformed = tfidf_vectorizer.transform([stemmed_text])
         predicted_labels = best_svm_model.predict(new_data_transformed)
