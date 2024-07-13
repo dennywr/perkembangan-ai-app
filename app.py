@@ -13,8 +13,8 @@ import re
 with open('tfidf_vectorizer.pkl', 'rb') as f:
     tfidf_vectorizer = pickle.load(f)
 
-with open('best_svm_model.pkl', 'rb') as f:
-    best_svm_model = pickle.load(f)
+with open('best_model.pkl', 'rb') as f:
+    best_model = pickle.load(f)
 
 # preprocessing
 def add_space_around_emoji(text):
@@ -46,13 +46,11 @@ def tokenize(text):
 url = 'https://raw.githubusercontent.com/dennywr/data/main/Normalization%20Data.csv'
 slank_words_df = pd.read_csv(url, sep=';')
 slank_words_dict = dict(zip(slank_words_df['Slangword'], slank_words_df['Kata Baku']))
-
 def normalize(tokens):
     normalized_tokens = [slank_words_dict.get(token, token) for token in tokens]
     return normalized_tokens
 
 stopwords_indonesia = set(stopwords.words('indonesian'))
-
 def remove_stopwords(tokens):
     filtered_tokens = [token for token in tokens if token.lower() not in stopwords_indonesia]
     return ' '.join(filtered_tokens)
@@ -76,12 +74,8 @@ if st.button("Prediksi"):
         normalized_tokens = normalize(tokens)
         filtered_text = remove_stopwords(normalized_tokens)
         stemmed_text = stem(filtered_text)
-
-        st.write(f"Teks hasil preprocessing: {stemmed_text}")
-
         new_data_transformed = tfidf_vectorizer.transform([stemmed_text])
-        predicted_labels = best_svm_model.predict(new_data_transformed)
-
+        predicted_labels = best_model.predict(new_data_transformed)
         st.write(f"Label hasil prediksi: {predicted_labels[0]}")
     else:
         st.write("Tolong masukkan teks terlebih dahulu.")
